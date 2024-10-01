@@ -2,13 +2,13 @@ import processing.core.PApplet;
 
 public class App extends PApplet {
     boolean alive = true;
-    int FRect = 0;
+    int Level = 0;
     boolean showMainMenu = false;
-    int lane = 0;
-    int ranNumF = (int) random(0,2);
-    int ranNumS = (int) random (0,1);
-    int fPos = 0;
-    int sPos = 250;
+    int fLane = 0;
+    int sLane = 0;
+    int fPointPos = 252;
+    int sPointPos = 375;
+    int tPointPos = 498;
     public static void main(String[] args) {
         
         PApplet.main("App");
@@ -35,17 +35,29 @@ public class App extends PApplet {
             mainMenu();
         }else{
             background(150);
-            rect(lane, FRect, 250, 100);
-            FRect += 1;
-            delay(10);
-            triangle(X, Y, X, Y, X, Y);
-            if(FRect == 600) {
-                FRect = 0;
+            rect(fLane, Level, 250, 100);
+            rect(sLane, Level, 250, 100);
+            Level += 2;
+            delay(1);
+            int ranNumF = ranGenSV();
+            triangle(fPointPos,400, sPointPos, 300, tPointPos, 400);
+            while (key == 'a') {
+                fPointPos = 2;
+                sPointPos = 125;
+                tPointPos = 248;
+            }
+            if(Level == 600) {
+                Level = 0;
                 if (ranNumF == 0) {
-                    lane = fPos;
+                    fLane = 0;
                 }else if(ranNumF == 1) {
-                    lane = sPos;
+                    fLane = 250;
+                }else if(ranNumF == 2) {
+                    fLane = 500;
+                }else{
+                    mainMenu();
                 }
+                obGenS(ranNumF);
             }
         }
         
@@ -66,4 +78,33 @@ public class App extends PApplet {
             
         }
         }
+    public void obGenS (int fGenPos) {
+        int ranNumS = ranGenSV();
+        if (fGenPos == 0) {
+            if (ranNumS == 0) {
+                sLane = 250;
+            }else{
+                sLane = 500;
+            }
+        }else if(fGenPos == 250) {
+            if (ranNumS == 0) {
+                sLane = 0;
+            }else{
+                sLane = 500;
+            }
+        }else if(fGenPos == 500) {
+            if (ranNumS == 0) {
+                sLane = 0;
+            }else{
+                sLane = 250;
+            }
+        }
     }
+
+    public int ranGenTV() {
+        return (int) random(0,1);
+    }
+    public int ranGenSV() {
+        return (int) random(0,2);
+    }
+}
