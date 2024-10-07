@@ -41,10 +41,20 @@ public class App extends PApplet {
             delay(1);
             int ranNumF = ranGenSV();
             triangle(fPointPos,400, sPointPos, 300, tPointPos, 400);
-            while (key == 'a') {
+            if (key == 'a') {
                 fPointPos = 2;
                 sPointPos = 125;
                 tPointPos = 248;
+            }
+            if (key == 's') {
+                fPointPos = 252;
+                sPointPos = 375;
+                tPointPos = 498;
+            }
+            if (key == 'd') {
+                fPointPos = 502;
+                sPointPos = 625;
+                tPointPos = 748;
             }
             if(Level == 600) {
                 Level = 0;
