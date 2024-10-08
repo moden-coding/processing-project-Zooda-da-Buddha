@@ -39,6 +39,8 @@ public class App extends PApplet {
             background(150);
             rect(fLane, Level, 250, 100);
             rect(sLane, Level, 250, 100);
+            textSize(30);
+            text("score: " + score, 20, 40);
             Level += obSpeed;
             imputManager();
             colisionManager(); 
@@ -56,12 +58,11 @@ public class App extends PApplet {
                 }else if(ranNumF == 2) {
                     fLane = 500;
                 }else{
-                    mainMenu();
                 }
                 obGenS(ranNumF);
             }
         }else if (scene == 3) {
-            
+            gameOver(alive);
         }else{
             background(0, 0, 200);
             textSize(100);
@@ -90,6 +91,10 @@ public class App extends PApplet {
                 sPointPos = 625;
                 tPointPos = 748;
          }
+        }else if (scene == 3) {
+            if (key == 'w') {
+                scene = 2;
+            }
         }
     }
 
@@ -124,7 +129,8 @@ public class App extends PApplet {
             textSize(100);
             text("Lane Dash", 165, 200);
             imputManager();
-            
+            textSize(50);
+            text("Press the spacebar to begen", 95, 300);
         }
     public void obGenS(int fGenPos) {
         int ranNumS = ranGenSV();
@@ -158,6 +164,7 @@ public class App extends PApplet {
     public void gameOver(boolean win) {
         if (win == true) {
             ifDied = "You Win!!";
+            scene = 1;
         }else{
             ifDied = "You Died";
         }
@@ -165,6 +172,6 @@ public class App extends PApplet {
         background(0, color, 0);
         textSize(100);
         text(ifDied, 165, 200);
-        scene = 1;
+        imputManager();
     }
 }
