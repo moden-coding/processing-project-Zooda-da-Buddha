@@ -3,12 +3,17 @@ import processing.core.PApplet;
 public class App extends PApplet {
     boolean alive = true;
     int Level = 0;
-    boolean showMainMenu = false;
+    int scene = 1;
     int fLane = 0;
     int sLane = 0;
     int fPointPos = 252;
     int sPointPos = 375;
     int tPointPos = 498;
+    int score = 0;
+    int obSpeed = 5;
+    boolean win = true;
+    int color = 0;
+    String ifDied = "You Died";
     public static void main(String[] args) {
         
         PApplet.main("App");
@@ -20,10 +25,7 @@ public class App extends PApplet {
     }
     // setup runs once
     public void setup() {
-        showMainMenu = true;
-        // while (showMainMenu == true) {
-        //     mainMenu();
-        // }
+        scene = 1;
         background(150, 0, 0);
         }
         
@@ -31,32 +33,21 @@ public class App extends PApplet {
     
     public void draw() {
 
-        if(showMainMenu){
+        if(scene == 1){
             mainMenu();
-        }else{
+        }else if (scene == 2) {
             background(150);
             rect(fLane, Level, 250, 100);
             rect(sLane, Level, 250, 100);
-            Level += 2;
-            delay(1);
+            Level += obSpeed;
+            imputManager();
+            colisionManager(); 
+            delay(10);
             int ranNumF = ranGenSV();
             triangle(fPointPos,400, sPointPos, 300, tPointPos, 400);
-            if (key == 'a') {
-                fPointPos = 2;
-                sPointPos = 125;
-                tPointPos = 248;
-            }
-            if (key == 's') {
-                fPointPos = 252;
-                sPointPos = 375;
-                tPointPos = 498;
-            }
-            if (key == 'd') {
-                fPointPos = 502;
-                sPointPos = 625;
-                tPointPos = 748;
-            }
             if(Level == 600) {
+                score =+1;
+                scoreManager();
                 Level = 0;
                 if (ranNumF == 0) {
                     fLane = 0;
@@ -69,12 +60,61 @@ public class App extends PApplet {
                 }
                 obGenS(ranNumF);
             }
+        }else if (scene == 3) {
+            
+        }else{
+            background(0, 0, 200);
+            textSize(100);
+            text("Error", 165, 200);
         }
         
     }
     
     
-    public void keyPressed() {}
+    public void imputManager() {
+        if (scene == 1) {
+            if (key == ' ') {
+                scene = 2;
+            }
+        }else if (scene == 2) {
+            if (key == 'a') {
+                fPointPos = 2;
+                sPointPos = 125;
+                tPointPos = 248;
+            }else if (key == 's') {
+                fPointPos = 252;
+                sPointPos = 375;
+                tPointPos = 498;
+            }else if (key == 'd') {
+                fPointPos = 502;
+                sPointPos = 625;
+                tPointPos = 748;
+         }
+        }
+    }
+
+    public void scoreManager() {
+        if (score == 20) {
+            obSpeed = 12;
+        }else if (score == 40) {
+            obSpeed = 14;
+        }else if (score == 60) {
+            obSpeed = 16;
+        }else if (score == 80) {
+            obSpeed = 18;
+        }else if (score == 100) {
+            gameOver(true);
+        }
+    }
+    public void blockManager() {
+
+    }
+
+    public void colisionManager() {
+        if (sPointPos - 125 == fLane || sPointPos - 125 == sLane && Level > 300 && Level < 400 ) {
+            gameOver(false);
+        }
+    }
 
     public void mainMenu() {
         
@@ -83,12 +123,10 @@ public class App extends PApplet {
             triangle(355, 425, 355, 375, 400, 400);
             textSize(100);
             text("Lane Dash", 165, 200);
-        if (key == ' ') {
-            showMainMenu = false;
+            imputManager();
             
         }
-        }
-    public void obGenS (int fGenPos) {
+    public void obGenS(int fGenPos) {
         int ranNumS = ranGenSV();
         if (fGenPos == 0) {
             if (ranNumS == 0) {
@@ -116,5 +154,17 @@ public class App extends PApplet {
     }
     public int ranGenSV() {
         return (int) random(0,2);
+    }
+    public void gameOver(boolean win) {
+        if (win == true) {
+            ifDied = "You Win!!";
+        }else{
+            ifDied = "You Died";
+        }
+        color =+ 1;
+        background(0, color, 0);
+        textSize(100);
+        text(ifDied, 165, 200);
+        scene = 1;
     }
 }
