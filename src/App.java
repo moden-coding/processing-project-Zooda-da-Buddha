@@ -1,19 +1,31 @@
+import javax.management.monitor.GaugeMonitor;
+
 import processing.core.PApplet;
 
 public class App extends PApplet {
     boolean alive = true;
-    int Level = 0;
+    int level = 0;
     int scene = 1;
-    int fLane = 0;
-    int sLane = 0;
+    int fObstical = 250;
+    int sObstical = 250;
     int fPointPos = 252;
     int sPointPos = 375;
     int tPointPos = 498;
     int score = 0;
-    int obSpeed = 5;
+    int lastScore = 0;
+    int obsticalSpeed = 5;
     boolean win = true;
     int color = 0;
-    String ifDied = "You Died";
+
+    // f before capatial means first
+    // s before capatial means second
+    // Pos stands for Position
+
+    final int MenuStageI = 1;
+    final int GameStageI = 2;
+    final int EndStageI = 3;
+
+    String ifDied = "Error";
     public static void main(String[] args) {
         
         PApplet.main("App");
@@ -33,36 +45,12 @@ public class App extends PApplet {
     
     public void draw() {
 
-        if(scene == 1){
-            mainMenu();
-        }else if (scene == 2) {
-            background(150);
-            rect(fLane, Level, 250, 100);
-            rect(sLane, Level, 250, 100);
-            textSize(30);
-            text("score: " + score, 20, 40);
-            Level += obSpeed;
-            imputManager();
-            colisionManager(); 
-            delay(10);
-            int ranNumF = ranGenSV();
-            triangle(fPointPos,400, sPointPos, 300, tPointPos, 400);
-            if(Level == 600) {
-                score =+1;
-                scoreManager();
-                Level = 0;
-                if (ranNumF == 0) {
-                    fLane = 0;
-                }else if(ranNumF == 1) {
-                    fLane = 250;
-                }else if(ranNumF == 2) {
-                    fLane = 500;
-                }else{
-                }
-                obGenS(ranNumF);
-            }
-        }else if (scene == 3) {
-            gameOver(alive);
+        if(scene == MenuStageI){
+            menuStage();
+        }else if (scene == GameStageI) {
+            gameStage();
+        }else if (scene == EndStageI) {
+            endStage(alive);
         }else{
             background(0, 0, 200);
             textSize(100);
@@ -92,36 +80,72 @@ public class App extends PApplet {
                 tPointPos = 748;
          }
         }else if (scene == 3) {
-            if (key == 'w') {
+            if (key == ' ') {
+                background(150);
+                score = 0;
                 scene = 2;
             }
         }
     }
 
     public void scoreManager() {
+        score++;
+        lastScore = score;
         if (score == 20) {
-            obSpeed = 12;
+            obsticalSpeed = 12;
+            lastScore = 20;
         }else if (score == 40) {
-            obSpeed = 14;
+            obsticalSpeed = 14;
+            lastScore = 40;
         }else if (score == 60) {
-            obSpeed = 16;
+            obsticalSpeed = 16;
+            lastScore = 60;
         }else if (score == 80) {
-            obSpeed = 18;
+            obsticalSpeed = 18;
+            lastScore = 80;
         }else if (score == 100) {
-            gameOver(true);
+            lastScore = 100;
+            endStage(true);
         }
     }
-    public void blockManager() {
-
+    public void gameStage() {
+        background(150);
+            textSize(30);
+            text("score: " + score, 20, 40);
+            level += obsticalSpeed;
+            rect(fObstical, level, 250, 100);
+            rect(sObstical, level, 250, 100);
+            imputManager();
+            colisionManager(); 
+            delay(10);
+            int ranNumF = ranGenSV();
+            triangle(fPointPos,400, sPointPos, 300, tPointPos, 400);
+            if(level == 600) {
+                scoreManager();
+                level = 0;
+                if (ranNumF == 0) {
+                    fObstical = 0;
+                }else if(ranNumF == 1) {
+                    fObstical = 250;
+                }else if(ranNumF == 2) {
+                    fObstical = 500;
+                }else{
+                }
+                obGenS(ranNumF);
+            }
     }
 
     public void colisionManager() {
-        if (sPointPos - 125 == fLane || sPointPos - 125 == sLane && Level > 300 && Level < 400 ) {
-            gameOver(false);
+        if (sPointPos - 125 == fObstical || sPointPos - 125 == sObstical) {
+            if (level <= 400 && level >= 300) {
+                scene = 3;
+                alive = false;
+                endStage(false);
+            }
         }
     }
 
-    public void mainMenu() {
+    public void menuStage() {
         
             background(0, 150, 0);
             ellipse(375, 400, 100, 100);
@@ -130,27 +154,29 @@ public class App extends PApplet {
             text("Lane Dash", 165, 200);
             imputManager();
             textSize(50);
-            text("Press the spacebar to begen", 95, 300);
+            text("Press the spacebar to begin", 95, 300);
+            textSize(25);
+            text("Control the character with keys W, S, and D", 155, 520);
         }
     public void obGenS(int fGenPos) {
         int ranNumS = ranGenSV();
         if (fGenPos == 0) {
             if (ranNumS == 0) {
-                sLane = 250;
+                sObstical = 250;
             }else{
-                sLane = 500;
+                sObstical = 500;
             }
         }else if(fGenPos == 250) {
             if (ranNumS == 0) {
-                sLane = 0;
+                sObstical = 0;
             }else{
-                sLane = 500;
+                sObstical = 500;
             }
         }else if(fGenPos == 500) {
             if (ranNumS == 0) {
-                sLane = 0;
+                sObstical = 0;
             }else{
-                sLane = 250;
+                sObstical = 250;
             }
         }
     }
@@ -161,17 +187,32 @@ public class App extends PApplet {
     public int ranGenSV() {
         return (int) random(0,2);
     }
-    public void gameOver(boolean win) {
+    public void endStage(boolean win) {
+        obsticalSpeed = 5;
+        score = 0;
+        fObstical = 250;
+        sObstical = 250;
+        fPointPos = 252;
+        sPointPos = 375;
+        tPointPos = 498;
+        level = 0;
         if (win == true) {
-            ifDied = "You Win!!";
-            scene = 1;
-        }else{
+            
+            ifDied = "You Win!";
+            color = 125;
+        }else if (win == false) {
             ifDied = "You Died";
+            color = 0;
         }
-        color =+ 1;
         background(0, color, 0);
         textSize(100);
-        text(ifDied, 165, 200);
+        text(ifDied, 185, 200);
+        textSize(50);
+        text("Your score was: " + lastScore, 190, 300);
+        textSize(25);
+        text("Press spacebar to continue", 225, 370);
+        ellipse(375, 440, 100, 100);
+        triangle(355, 465, 355, 415, 400, 440);
         imputManager();
     }
 }
