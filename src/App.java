@@ -4,6 +4,7 @@ import processing.core.PApplet;
 
 public class App extends PApplet {
     boolean alive = true;
+    boolean lastPOS = false;
     int level = 0;
     int scene = 1;
     int fObstical = 250;
@@ -16,14 +17,19 @@ public class App extends PApplet {
     int obsticalSpeed = 5;
     boolean win = true;
     int color = 0;
-
+    int randTimr = 0;
+    int RanGenTV = 0;
+    int RanGenSV = 0;
+    int fPRErANnUM = 0;
+    int sPRErANnUM = 2;
+    int retNum = 0;
     // f before capatial means first
     // s before capatial means second
     // Pos stands for Position
 
-    final int MenuStageI = 1;
-    final int GameStageI = 2;
-    final int EndStageI = 3;
+    final int MENUsTAGE = 1;
+    final int GAMEsTAGE = 2;
+    final int ENDsTAGE = 3;
 
     String ifDied = "Error";
     public static void main(String[] args) {
@@ -45,11 +51,11 @@ public class App extends PApplet {
     
     public void draw() {
 
-        if(scene == MenuStageI){
+        if(scene == MENUsTAGE){
             menuStage();
-        }else if (scene == GameStageI) {
+        }else if (scene == GAMEsTAGE) {
             gameStage();
-        }else if (scene == EndStageI) {
+        }else if (scene == ENDsTAGE) {
             endStage(alive);
         }else{
             background(0, 0, 200);
@@ -141,12 +147,13 @@ public class App extends PApplet {
                 scene = 3;
                 alive = false;
                 endStage(false);
+                randTimr = 0;
             }
         }
     }
 
     public void menuStage() {
-        
+            randTimr++;
             background(0, 150, 0);
             ellipse(375, 400, 100, 100);
             triangle(355, 425, 355, 375, 400, 400);
@@ -181,11 +188,33 @@ public class App extends PApplet {
         }
     }
 
+    public int PreRanNumGen() {
+        return (int) random(0, 999);
+    }
+
     public int ranGenTV() {
-        return (int) random(0,1);
+        fPRErANnUM = PreRanNumGen();
+        sPRErANnUM = PreRanNumGen();
+
+
     }
     public int ranGenSV() {
-        return (int) random(0,2);
+        fPRErANnUM = PreRanNumGen();
+        sPRErANnUM = PreRanNumGen();
+        if (fPRErANnUM < 333 && sPRErANnUM % 2 == 0) {
+            retNum = 0;
+        }else if (fPRErANnUM > 333 && fPRErANnUM < 666 && sPRErANnUM % 2 == 0) {
+            retNum = 1;
+        }else if (fPRErANnUM > 666 && sPRErANnUM % 2 == 0) {
+            retNum = 2;
+        }else if (fPRErANnUM < 333 && sPRErANnUM % 2 != 0) {
+            retNum = 2;
+        }else if (fPRErANnUM < 333 && sPRErANnUM % 2 != 0) {
+            retNum = 0;
+        }
+        retNum = sPRErANnUM + retNum;
+        retNum %= 3;
+        return (int) retNum;
     }
     public void endStage(boolean win) {
         obsticalSpeed = 5;
@@ -204,6 +233,8 @@ public class App extends PApplet {
             ifDied = "You Died";
             color = 0;
         }
+        color++;
+        randTimr++;
         background(0, color, 0);
         textSize(100);
         text(ifDied, 185, 200);
