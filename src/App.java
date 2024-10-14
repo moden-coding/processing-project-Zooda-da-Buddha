@@ -5,6 +5,11 @@ import processing.core.PApplet;
 public class App extends PApplet {
     boolean alive = true;
     boolean lastPOS = false;
+    boolean spacePressed = true;
+    boolean inTheMiddle = true;
+    boolean inTheLeft = false;
+    boolean inTheRight = false;
+    char lastKey = ' ';
     int level = 0;
     int scene = 1;
     int fObstical = 250;
@@ -55,6 +60,15 @@ public class App extends PApplet {
             menuStage();
         }else if (scene == GAMEsTAGE) {
             gameStage();
+            if (fPointPos < 2 && sPointPos < 125 && tPointPos < 248) {
+                fPointPos = 2;
+                sPointPos = 125;
+                tPointPos = 248;
+            }else if (fPointPos > 502 && sPointPos > 625 && tPointPos > 748) {
+                fPointPos = 502;
+                sPointPos = 625;
+                tPointPos = 748;
+            }
         }else if (scene == ENDsTAGE) {
             endStage(alive);
         }else{
@@ -67,29 +81,31 @@ public class App extends PApplet {
     
     
     public void imputManager() {
-        if (scene == 1) {
+        if (scene == MENUsTAGE) {
             if (key == ' ') {
-                scene = 2;
+                scene = GAMEsTAGE;
             }
-        }else if (scene == 2) {
-            if (key == 'a') {
+        }else if (scene == GAMEsTAGE) {
+            if (key == 'a' && inTheMiddle == true) {
                 fPointPos = 2;
-                sPointPos = 125;
-                tPointPos = 248;
-            }else if (key == 's') {
-                fPointPos = 252;
-                sPointPos = 375;
-                tPointPos = 498;
-            }else if (key == 'd') {
-                fPointPos = 502;
-                sPointPos = 625;
-                tPointPos = 748;
-         }
-        }else if (scene == 3) {
+                sPointPos -= 250;
+                tPointPos -= 250;
+            }else if (key == 'd' && inTheMiddle == true) {
+                fPointPos += 250;
+                sPointPos += 250;
+                tPointPos += 250;
+            }
+        }else if (scene == ENDsTAGE) {
             if (key == ' ') {
                 background(150);
                 score = 0;
-                scene = 2;
+                scene = GAMEsTAGE;
+            }
+            if (lastKey != 'l') {
+                lastKey = key;
+            }
+            if (scene == GAMEsTAGE && score > 0) {
+                lastKey = key;
             }
         }
     }
@@ -97,17 +113,18 @@ public class App extends PApplet {
     public void scoreManager() {
         score++;
         lastScore = score;
+        lastKey = key;
         if (score == 20) {
-            obsticalSpeed = 12;
+            obsticalSpeed = 11;
             lastScore = 20;
         }else if (score == 40) {
-            obsticalSpeed = 14;
+            obsticalSpeed = 12;
             lastScore = 40;
         }else if (score == 60) {
-            obsticalSpeed = 16;
+            obsticalSpeed = 13;
             lastScore = 60;
         }else if (score == 80) {
-            obsticalSpeed = 18;
+            obsticalSpeed = 14;
             lastScore = 80;
         }else if (score == 100) {
             lastScore = 100;
@@ -195,8 +212,13 @@ public class App extends PApplet {
     public int ranGenTV() {
         fPRErANnUM = PreRanNumGen();
         sPRErANnUM = PreRanNumGen();
-
-
+        if (fPRErANnUM < 500) {
+            retNum = 0;
+        }else{
+            retNum = 1;
+        }
+        retNum += sPRErANnUM; 
+        return (int) retNum;
     }
     public int ranGenSV() {
         fPRErANnUM = PreRanNumGen();
@@ -212,11 +234,14 @@ public class App extends PApplet {
         }else if (fPRErANnUM < 333 && sPRErANnUM % 2 != 0) {
             retNum = 0;
         }
-        retNum = sPRErANnUM + retNum;
+        retNum += sPRErANnUM + randTimr;
         retNum %= 3;
         return (int) retNum;
     }
     public void endStage(boolean win) {
+        if (lastKey == ' ' && score == 0) {
+            key = 'g';
+        }
         obsticalSpeed = 5;
         score = 0;
         fObstical = 250;
@@ -225,6 +250,7 @@ public class App extends PApplet {
         sPointPos = 375;
         tPointPos = 498;
         level = 0;
+        randTimr = 0;
         if (win == true) {
             
             ifDied = "You Win!";
