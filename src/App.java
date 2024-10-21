@@ -88,12 +88,20 @@ public class App extends PApplet {
         }else if (scene == GAMEsTAGE) {
             if (key == 'a' && inTheMiddle == true) {
                 fPointPos = 2;
-                sPointPos -= 250;
-                tPointPos -= 250;
-            }else if (key == 'd' && inTheMiddle == true) {
-                fPointPos += 250;
-                sPointPos += 250;
-                tPointPos += 250;
+                sPointPos = 125;
+                tPointPos = 248;
+            }else if (key == 's') {
+                fPointPos = 252;
+                sPointPos = 375;
+                tPointPos = 498;
+            }else if (key == 'd') {
+                fPointPos = 502;
+                sPointPos = 625;
+                tPointPos = 748;
+            }else if (key == 'j') {
+                score = 19;
+            }else if (key == 'k') {
+                score = 39;
             }
         }else if (scene == ENDsTAGE) {
             if (key == ' ') {
@@ -115,16 +123,16 @@ public class App extends PApplet {
         lastScore = score;
         lastKey = key;
         if (score == 20) {
-            obsticalSpeed = 11;
+            obsticalSpeed = 6;
             lastScore = 20;
         }else if (score == 40) {
-            obsticalSpeed = 12;
+            obsticalSpeed = 7;
             lastScore = 40;
         }else if (score == 60) {
-            obsticalSpeed = 13;
+            obsticalSpeed = 8;
             lastScore = 60;
         }else if (score == 80) {
-            obsticalSpeed = 14;
+            obsticalSpeed = 9;
             lastScore = 80;
         }else if (score == 100) {
             lastScore = 100;
@@ -143,7 +151,7 @@ public class App extends PApplet {
             delay(10);
             int ranNumF = ranGenSV();
             triangle(fPointPos,400, sPointPos, 300, tPointPos, 400);
-            if(level == 600) {
+            if(level >= 600) {
                 scoreManager();
                 level = 0;
                 if (ranNumF == 0) {
