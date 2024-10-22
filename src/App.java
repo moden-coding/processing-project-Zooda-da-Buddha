@@ -98,10 +98,6 @@ public class App extends PApplet {
                 fPointPos = 502;
                 sPointPos = 625;
                 tPointPos = 748;
-            }else if (key == 'j') {
-                score = 19;
-            }else if (key == 'k') {
-                score = 39;
             }
         }else if (scene == ENDsTAGE) {
             if (key == ' ') {
